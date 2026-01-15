@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -100,6 +100,7 @@ vim.g.have_nerd_font = false
 
 -- Make line numbers default
 vim.o.number = true
+vim.o.relativenumber = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.o.relativenumber = true
@@ -345,7 +346,10 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>s', group = '[S]earch' },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>w', group = '[W]indow' },
+        { '<leader>t', group = '[T]oggle/Todo' },
+        { '<leader>o', group = '[O]pen' },
+        { '<leader>f', group = '[F]ile' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -417,12 +421,57 @@ require('lazy').setup({
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
+          project = {
+            base_dirs = {
+              '~/checkout/',
+              '~/config/',
+            },
+            ignore_missing_dirs = true, -- default: false
+            hidden_files = true, -- default: false
+            theme = 'dropdown',
+            order_by = 'asc',
+            search_by = 'title',
+            sync_with_nvim_tree = true, -- default false
+            -- default for on_project_selected = find project files
+            on_project_selected = function(prompt_bufnr)
+              -- Do anything you want in here. For example:
+              require('telescope._extensions.project.actions').change_working_directory(prompt_bufnr, false)
+              require('telescope.builtin').find_files()
+            end,
+            mappings = {
+              n = {
+                ['d'] = require('telescope._extensions.project.actions').delete_project,
+                ['r'] = require('telescope._extensions.project.actions').rename_project,
+                ['c'] = require('telescope._extensions.project.actions').add_project,
+                ['C'] = require('telescope._extensions.project.actions').add_project_cwd,
+                ['f'] = require('telescope._extensions.project.actions').find_project_files,
+                ['b'] = require('telescope._extensions.project.actions').browse_project_files,
+                ['s'] = require('telescope._extensions.project.actions').search_in_project_files,
+                ['R'] = require('telescope._extensions.project.actions').recent_project_files,
+                ['w'] = require('telescope._extensions.project.actions').change_working_directory,
+                ['o'] = require('telescope._extensions.project.actions').next_cd_scope,
+              },
+              i = {
+                ['<c-d>'] = require('telescope._extensions.project.actions').delete_project,
+                ['<c-v>'] = require('telescope._extensions.project.actions').rename_project,
+                ['<c-a>'] = require('telescope._extensions.project.actions').add_project,
+                ['<c-A>'] = require('telescope._extensions.project.actions').add_project_cwd,
+                ['<c-f>'] = require('telescope._extensions.project.actions').find_project_files,
+                ['<c-b>'] = require('telescope._extensions.project.actions').browse_project_files,
+                ['<c-s>'] = require('telescope._extensions.project.actions').search_in_project_files,
+                ['<c-r>'] = require('telescope._extensions.project.actions').recent_project_files,
+                ['<c-l>'] = require('telescope._extensions.project.actions').change_working_directory,
+                ['<c-o>'] = require('telescope._extensions.project.actions').next_cd_scope,
+              },
+            },
+          }, -- Ending of project plugin settings
         },
       }
 
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'project')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -436,6 +485,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+      -- keymapit filu muutoksiin
+      -- vim.keymap.set('n', '<leader>fs', ':w<CR>', { desc = '[F]ile [S]ave' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -742,12 +794,12 @@ require('lazy').setup({
     cmd = { 'ConformInfo' },
     keys = {
       {
-        '<leader>f',
+        '<leader>ff',
         function()
           require('conform').format { async = true, lsp_format = 'fallback' }
         end,
         mode = '',
-        desc = '[F]ormat buffer',
+        desc = '[F]ormat [F]ile',
       },
     },
     opts = {
@@ -894,13 +946,14 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight-moon'
     end,
   },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
+  -- TODO Selvitä miksi tää ei toimi
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
@@ -964,6 +1017,18 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
+  { -- File browser plugari telescopeen, lähinnä project plugaria varten.
+    'nvim-telescope/telescope-file-browser.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
+  },
+
+  {
+    'nvim-telescope/telescope-project.nvim',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+    },
+  },
+
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -984,7 +1049,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1011,6 +1076,10 @@ require('lazy').setup({
     },
   },
 })
+
+-- Korjataan että W on w ja Wq on wq
+vim.api.nvim_create_user_command('W', 'w', {})
+vim.api.nvim_create_user_command('Wq', 'wq', {})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
