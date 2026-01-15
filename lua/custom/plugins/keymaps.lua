@@ -27,4 +27,17 @@ return {
   vim.keymap.set('v', '<D-v>', '"+p'), -- Paste visual mode
   vim.keymap.set('c', '<D-v>', '<C-R>+'), -- Paste command mode
   vim.keymap.set('i', '<D-v>', '<cmd>set paste<cr><C-R>+<cmd>set nopaste<cr>'), -- Paste insert mode
+
+  -- Toggle for bigmode
+  vim.keymap.set('n', '<leader>tb', function()
+    local size = 1.6
+
+    if vim.g.neovide == true then
+      if vim.g.neovide_scale_factor == size then
+        vim.g.neovide_scale_factor = 1
+      else
+        vim.g.neovide_scale_factor = size
+      end
+    end
+  end, { desc = '[T]oggle [B]igmode' }),
 }
