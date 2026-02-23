@@ -18,6 +18,9 @@ return {
   vim.keymap.set('n', '<leader>ws', ':split<CR>', { desc = 'Split window' }),
   vim.keymap.set('n', '<leader>wv', ':vsplit<CR>', { desc = 'vertically split window' }),
 
+  -- Doomista space+. search files
+  vim.keymap.set('n', '<leader>.', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' }),
+
   -- Keymaps for file operations
   vim.keymap.set('n', '<leader>fs', ':w<CR>', { desc = '[F]ile [S]ave' }),
 
