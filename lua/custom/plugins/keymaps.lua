@@ -15,6 +15,7 @@ return {
   vim.keymap.set('n', '<leader>wl', '<C-w><C-l>', { desc = 'Move focus to the right window' }),
   vim.keymap.set('n', '<leader>wj', '<C-w><C-j>', { desc = 'Move focus to the lower window' }),
   vim.keymap.set('n', '<leader>wk', '<C-w><C-k>', { desc = 'Move focus to the upper window' }),
+  vim.keymap.set('n', '<leader>ww', '<C-w><C-w>', { desc = 'Cycle window focus' }),
   vim.keymap.set('n', '<leader>ws', ':split<CR>', { desc = 'Split window' }),
   vim.keymap.set('n', '<leader>wv', ':vsplit<CR>', { desc = 'vertically split window' }),
 
