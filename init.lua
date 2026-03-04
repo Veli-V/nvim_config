@@ -73,18 +73,30 @@ function _G.window_wrap(key, direction)
   vim.cmd('wincmd ' .. key)
   if current_win == vim.api.nvim_get_current_win() then
     -- Jos ikkuna ei muuttunut, hypätään vastakkaiseen laitaan
-    if direction == 'h' then vim.cmd('wincmd L')
-    elseif direction == 'l' then vim.cmd('wincmd H')
-    elseif direction == 'j' then vim.cmd('wincmd K')
-    elseif direction == 'k' then vim.cmd('wincmd J')
+    if direction == 'h' then
+      vim.cmd 'wincmd L'
+    elseif direction == 'l' then
+      vim.cmd 'wincmd H'
+    elseif direction == 'j' then
+      vim.cmd 'wincmd K'
+    elseif direction == 'k' then
+      vim.cmd 'wincmd J'
     end
   end
 end
 
-vim.keymap.set('n', '<C-h>', function() _G.window_wrap('h', 'h') end, { desc = 'Move focus left (wrap)' })
-vim.keymap.set('n', '<C-l>', function() _G.window_wrap('l', 'l') end, { desc = 'Move focus right (wrap)' })
-vim.keymap.set('n', '<C-j>', function() _G.window_wrap('j', 'j') end, { desc = 'Move focus down (wrap)' })
-vim.keymap.set('n', '<C-k>', function() _G.window_wrap('k', 'k') end, { desc = 'Move focus up (wrap)' })
+vim.keymap.set('n', '<C-h>', function()
+  _G.window_wrap('h', 'h')
+end, { desc = 'Move focus left (wrap)' })
+vim.keymap.set('n', '<C-l>', function()
+  _G.window_wrap('l', 'l')
+end, { desc = 'Move focus right (wrap)' })
+vim.keymap.set('n', '<C-j>', function()
+  _G.window_wrap('j', 'j')
+end, { desc = 'Move focus down (wrap)' })
+vim.keymap.set('n', '<C-k>', function()
+  _G.window_wrap('k', 'k')
+end, { desc = 'Move focus up (wrap)' })
 
 -- [[ Basic Autocommands ]]
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -291,12 +303,18 @@ require('lazy').setup({
   { -- Autocompletion
     'saghen/blink.cmp',
     version = '1.*',
-    dependencies = { 'L3MON4D3/LuaSnip', version = '2.*' },
+    dependencies = {
+      { 'L3MON4D3/LuaSnip', version = '2.*' },
+      { 'folke/lazydev.nvim', ft = 'lua', opts = {} },
+    },
     opts = {
       keymap = { preset = 'default' },
       appearance = { nerd_font_variant = 'mono' },
       sources = {
         default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        providers = {
+          lazydev = { name = 'LazyDev', module = 'lazydev.integrations.blink', score_offset = 100 },
+        },
       },
       snippets = { preset = 'luasnip' },
       signature = { enabled = true },
@@ -310,15 +328,15 @@ require('lazy').setup({
     config = function()
       vim.g.everforest_enable_italic = true
       vim.g.everforest_background = 'soft'
-      vim.cmd.colorscheme('everforest')
-    end
+      vim.cmd.colorscheme 'everforest'
+    end,
   },
 
   { -- Todo comments
     'folke/todo-comments.nvim',
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = { signs = false }
+    opts = { signs = false },
   },
 
   { -- Mini.nvim
@@ -334,41 +352,71 @@ require('lazy').setup({
     end,
   },
 
-  { -- Treesitter (Neovim 0.11+ natiivi tyyli)
+  { -- Treesitter
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    config = function()
-      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
-      require('nvim-treesitter').install(parsers)
-      
+    opts = {
+      -- TÄSTÄ on helppo lisätä uusia kieliä:
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'hcl',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'terraform',
+        'vim',
+        'vimdoc',
+      },
+    },
+    config = function(_, opts)
+      -- Asennetaan/päivitetään listatut kielet
+      require('nvim-treesitter').install(opts.ensure_installed)
+
+      -- Neovim 0.11+ natiivi ja nopea tapa aktivoida Treesitter
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)
-          local buf, filetype = args.buf, args.match
-          local language = vim.treesitter.language.get_lang(filetype)
-          if not language then return end
-          if not vim.treesitter.language.add(language) then return end
-          vim.treesitter.start(buf, language)
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          local buf = args.buf
+          local lang = vim.treesitter.language.get_lang(vim.bo[buf].filetype)
+          if lang and vim.treesitter.language.add(lang) then
+            vim.treesitter.start(buf, lang)
+            -- Aktivoidaan myös sisennys
+            vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
         end,
       })
     end,
   },
 
+
   -- OMA: Tuodaan custom pluginit
   { import = 'custom.plugins' },
-
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘', config = '🛠', event = '📅', ft = '📂', init = '⚙', keys = '🗝',
-      plugin = '🔌', runtime = '💻', require = '🌙', source = '📄', start = '🚀',
-      task = '📌', lazy = '💤 ',
+      cmd = '⌘',
+      config = '🛠',
+      event = '📅',
+      ft = '📂',
+      init = '⚙',
+      keys = '🗝',
+      plugin = '🔌',
+      runtime = '💻',
+      require = '🌙',
+      source = '📄',
+      start = '🚀',
+      task = '📌',
+      lazy = '💤 ',
     },
   },
 })
 
 -- OMA: Ladataan omat keymapit (erillään plugin-importista)
-require('custom.keymaps')
+require 'custom.keymaps'
 
 -- OMA: Tallennuskomentojen helpotukset
 vim.api.nvim_create_user_command('W', 'w', {})
