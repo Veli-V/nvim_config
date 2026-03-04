@@ -73,10 +73,14 @@ function _G.window_wrap(key, direction)
   vim.cmd('wincmd ' .. key)
   if current_win == vim.api.nvim_get_current_win() then
     -- Jos ikkuna ei muuttunut, hypätään vastakkaiseen laitaan
-    if direction == 'h' then vim.cmd('wincmd L')
-    elseif direction == 'l' then vim.cmd('wincmd H')
-    elseif direction == 'j' then vim.cmd('wincmd K')
-    elseif direction == 'k' then vim.cmd('wincmd J')
+    if direction == 'h' then
+      vim.cmd('wincmd L')
+    elseif direction == 'l' then
+      vim.cmd('wincmd H')
+    elseif direction == 'j' then
+      vim.cmd('wincmd K')
+    elseif direction == 'k' then
+      vim.cmd('wincmd J')
     end
   end
 end
@@ -130,12 +134,12 @@ require('lazy').setup({
       delay = 0,
       icons = { mappings = vim.g.have_nerd_font },
       spec = {
-        { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
+        { '<leader>s', group = '[S]earch',     mode = { 'n', 'v' } },
         { '<leader>w', group = '[W]indow' },
         { '<leader>t', group = '[T]oggle/Todo' },
         { '<leader>o', group = '[O]pen' },
         { '<leader>f', group = '[F]ile' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>h', group = 'Git [H]unk',   mode = { 'n', 'v' } },
       },
     },
   },
@@ -153,7 +157,7 @@ require('lazy').setup({
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
       -- OMAT Telescope pluginit
       'nvim-telescope/telescope-file-browser.nvim',
       'nvim-telescope/telescope-project.nvim',
@@ -202,7 +206,8 @@ require('lazy').setup({
           vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = buf, desc = 'LSP: [G]oto [I]mplementation' })
           vim.keymap.set('n', 'grd', builtin.lsp_definitions, { buffer = buf, desc = 'LSP: [G]oto [D]efinition' })
           vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = buf, desc = 'LSP: Open Document Symbols' })
-          vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'LSP: Open Workspace Symbols' })
+          vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols,
+            { buffer = buf, desc = 'LSP: Open Workspace Symbols' })
         end,
       })
     end,
@@ -214,7 +219,7 @@ require('lazy').setup({
       { 'mason-org/mason.nvim', opts = {} },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',    opts = {} },
       'saghen/blink.cmp',
     },
     config = function()
@@ -338,9 +343,10 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     config = function()
-      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim',
+        'vimdoc' }
       require('nvim-treesitter').install(parsers)
-      
+
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)
           local buf, filetype = args.buf, args.match
@@ -360,9 +366,19 @@ require('lazy').setup({
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘', config = '🛠', event = '📅', ft = '📂', init = '⚙', keys = '🗝',
-      plugin = '🔌', runtime = '💻', require = '🌙', source = '📄', start = '🚀',
-      task = '📌', lazy = '💤 ',
+      cmd = '⌘',
+      config = '🛠',
+      event = '📅',
+      ft = '📂',
+      init = '⚙',
+      keys = '🗝',
+      plugin = '🔌',
+      runtime = '💻',
+      require = '🌙',
+      source = '📄',
+      start = '🚀',
+      task = '📌',
+      lazy = '💤 ',
     },
   },
 })
@@ -373,6 +389,7 @@ require('custom.keymaps')
 -- OMA: Tallennuskomentojen helpotukset
 vim.api.nvim_create_user_command('W', 'w', {})
 vim.api.nvim_create_user_command('Wq', 'wq', {})
+vim.api.nvim_create_user_command('Q', 'q', {})
 
 -- OMA: Natiivi 0.11 Treesitter taittoasetukset
 vim.opt.foldmethod = 'expr'
