@@ -10,10 +10,14 @@ vim.keymap.set('n', '<leader>ts', ':TodoTelescope<CR>', { desc = '[T]odo [S]earc
 vim.keymap.set('n', '<leader>tt', ':TodoQuickFix<CR>', { desc = '[T]odo QuickFix' })
 
 -- Ikkuna navigointi, kopio doom emacsista (wrap-toiminnolla)
-vim.keymap.set('n', '<leader>wh', function() _G.window_wrap('h', 'h') end, { desc = 'Move focus to the left window (wrap)' })
-vim.keymap.set('n', '<leader>wl', function() _G.window_wrap('l', 'l') end, { desc = 'Move focus to the right window (wrap)' })
-vim.keymap.set('n', '<leader>wj', function() _G.window_wrap('j', 'j') end, { desc = 'Move focus to the lower window (wrap)' })
-vim.keymap.set('n', '<leader>wk', function() _G.window_wrap('k', 'k') end, { desc = 'Move focus to the upper window (wrap)' })
+vim.keymap.set('n', '<leader>wh', function() _G.window_wrap('h', 'h') end,
+  { desc = 'Move focus to the left window (wrap)' })
+vim.keymap.set('n', '<leader>wl', function() _G.window_wrap('l', 'l') end,
+  { desc = 'Move focus to the right window (wrap)' })
+vim.keymap.set('n', '<leader>wj', function() _G.window_wrap('j', 'j') end,
+  { desc = 'Move focus to the lower window (wrap)' })
+vim.keymap.set('n', '<leader>wk', function() _G.window_wrap('k', 'k') end,
+  { desc = 'Move focus to the upper window (wrap)' })
 vim.keymap.set('n', '<leader>ww', '<C-w><C-w>', { desc = 'Cycle window focus' })
 vim.keymap.set('n', '<leader>ws', ':split<CR>', { desc = 'Split window' })
 vim.keymap.set('n', '<leader>wv', ':vsplit<CR>', { desc = 'vertically split window' })
