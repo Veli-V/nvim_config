@@ -11,7 +11,7 @@ return {
       end,
     },
     { 'nvim-telescope/telescope-ui-select.nvim' },
-    { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+    { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     'nvim-telescope/telescope-file-browser.nvim',
     'nvim-telescope/telescope-project.nvim',
   },
@@ -22,7 +22,7 @@ return {
           require('telescope.themes').get_dropdown(),
         },
         project = {
-          base_dirs = { '~/checkout/' },
+          base_dirs = { '~/checkout/', '~/.config/nvim/' },
           hidden_files = true,
           theme = 'dropdown',
           on_project_selected = function(prompt_bufnr)
@@ -58,7 +58,8 @@ return {
         vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = buf, desc = 'LSP: [G]oto [I]mplementation' })
         vim.keymap.set('n', 'grd', builtin.lsp_definitions, { buffer = buf, desc = 'LSP: [G]oto [D]efinition' })
         vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = buf, desc = 'LSP: Open Document Symbols' })
-        vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'LSP: Open Workspace Symbols' })
+        vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols,
+          { buffer = buf, desc = 'LSP: Open Workspace Symbols' })
       end,
     })
   end,
